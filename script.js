@@ -27,13 +27,20 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.timeline-item, .project-card').forEach(el => observer.observe(el));
 
 // ── CONTACT FORM ──
-document.getElementById('contactForm').addEventListener('submit', function(e) {
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const note = document.getElementById('formNote');
-  note.textContent = '✓ Message sent! I\'ll get back to you soon.';
-  note.style.color = '#2d7a4a';
-  this.reset();
-  setTimeout(() => note.textContent = '', 4000);
+  const data = new FormData(this);
+  try {
+    await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() });
+    note.textContent = '✓ Message sent! I\'ll get back to you soon.';
+    note.style.color = '#2d7a4a';
+    this.reset();
+    setTimeout(() => note.textContent = '', 4000);
+  } catch {
+    note.textContent = '✗ Something went wrong. Please email me directly.';
+    note.style.color = '#e53e3e';
+  }
 });
 
 // ── ACTIVE NAV LINK ──
